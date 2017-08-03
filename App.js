@@ -24,7 +24,7 @@ function checkWall() {
                     procedPosts.push(post.post_id);
                     console.log("1 request was proced " + post.post_id)
                 }).catch(error => {
-                    console.log("1 request was raised")
+                    console.log(error.error_msg)
                 })
             }
         });
