@@ -31,7 +31,8 @@ function procPost() {
     let id = post.post_id;
 
     if (procedPosts.indexOf(id) == -1 && post.type == "post") {
-        console.log(">>New post was found");
+        let name = post.text.slice(0,10)
+        console.log(`>>New post "${name}${name == post.text?"":"..."}" was found`);
         bot.api("wall.createComment", {
             owner_id: post.source_id,
             post_id: post.post_id,
