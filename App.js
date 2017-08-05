@@ -12,7 +12,9 @@ const bot = new vkBot.Bot({
 let procedPosts = [];
 let posts = [];
 
-function msleep(e){for(var o=new Date;(new Date).getTime()<o.getTime()+e;);}function isNode(){return"undefined"!=typeof module&&"undefined"!=typeof module.exports}isNode?module.exports=msleep:window.msleep=msleep;
+function msleep(e){
+    for(var o=new Date;(new Date).getTime()<o.getTime()+e;);
+}
 
 function continueProcPost(){
     msleep(config.hold_time_ms);
@@ -30,9 +32,9 @@ function procPost() {
     let post = posts[0];
     let id = post.post_id;
 
-    if (procedPosts.indexOf(id) == -1 && post.type == "post") {
-        let name = post.text.slice(0,10)
-        console.log(`>>New post "${name}${name == post.text?"":"..."}" was found`);
+    if (procedPosts.indexOf(id) === -1 && post.type === "post") {
+        let name = post.text.slice(0,10);
+        console.log(`>>New post "${name}${name === post.text?"":"..."}" was found`);
         bot.api("wall.createComment", {
             owner_id: post.source_id,
             post_id: post.post_id,
