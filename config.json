@@ -1,0 +1,10 @@
+{
+  "api_key":"25f3d9bf2162d0c9c7178e2287316f5ed9fe0b0baf2bb6deff390c9e5f05e2bb58735049715d55e7cab6d",
+  "refresh_time_ms":1000,
+  "hold_time_ms":400,
+  "message":
+  {
+    "text":"kek",
+    "attachments":""
+  }
+}

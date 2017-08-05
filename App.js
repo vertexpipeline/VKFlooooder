@@ -1,10 +1,11 @@
 'use strict';
 
 let vkBot = require('node-vk-bot');
-let sleep = require('msleep');
+
+let config = require('./config.json');
 
 const bot = new vkBot.Bot({
-    token: '25f3d9bf2162d0c9c7178e2287316f5ed9fe0b0baf2bb6deff390c9e5f05e2bb58735049715d55e7cab6d',
+    token: config.api_key,
     prefix: /./
 }).start();
 
@@ -14,7 +15,7 @@ let posts = [];
 function msleep(e){for(var o=new Date;(new Date).getTime()<o.getTime()+e;);}function isNode(){return"undefined"!=typeof module&&"undefined"!=typeof module.exports}isNode?module.exports=msleep:window.msleep=msleep;
 
 function continueProcPost(){
-    msleep(500);
+    msleep(config.hold_time_ms);
     if (posts.length > 2) {
         posts.splice(0, 1);
         procPost(posts);
@@ -30,14 +31,14 @@ function procPost() {
     let id = post.post_id;
 
     if (procedPosts.indexOf(id) == -1 && post.type == "post") {
-        console.log("Найден новый пост, флудим...");
+        console.log(">>New post was found");
         bot.api("wall.createComment", {
             owner_id: post.source_id,
             post_id: post.post_id,
-            message: "Пройдите опрос по беспроводной передаче данных. Спасибо.",
-            attachments: "https://docs.google.com/forms/d/e/1FAIpQLSfh801Nndk6VElU1A4SNDUINeNOd011htu41DY45dc-tYcOyA/viewform?usp=sf_link"
+            message: config.message.text,
+            attachments: config.message.attachments
         }).then(res => {
-            console.log("Пост обработан ");
+            console.log("<<Post was proced");
             procedPosts.push(id);
             continueProcPost();
         }).catch(error=>{
@@ -52,9 +53,15 @@ function checkWall() {
     bot.api("newsfeed.get").then(res => {
         posts = res.items;
         procPost();
-        msleep(1000)
+        msleep(config.refresh_time_ms)
     });
 }
 
-checkWall();
+bot.api('users.get').then(res=>{
+    console.log(`Staring at profile ${res[0].first_name} ${res[0].last_name}`);
+    console.log(`Delay of every comment is ${config.hold_time_ms} ms`);
+    console.log(`Flooder checks wall posts after ${config.refresh_time_ms} ms`);
+    console.log(`Posts "${config.message.text}" with "${config.message.attachments}" attachments.`);
+    checkWall();
+});
 
